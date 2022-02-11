@@ -67,6 +67,7 @@ pub(super) async fn run<REv: ReactorEventT>(
     let rpc_get_deploy = rpcs::info::GetDeploy::create_filter(effect_builder, api_version);
     let rpc_get_peers = rpcs::info::GetPeers::create_filter(effect_builder, api_version);
     let rpc_get_status = rpcs::info::GetStatus::create_filter(effect_builder, api_version);
+    let rpc_get_chainspec = rpcs::info::GetChainspec::create_filter(effect_builder, api_version);
     let rpc_get_era_info =
         rpcs::chain::GetEraInfoBySwitchBlock::create_filter(effect_builder, api_version);
     let rpc_get_auction_info =
@@ -102,6 +103,7 @@ pub(super) async fn run<REv: ReactorEventT>(
         .or(rpc_get_deploy)
         .or(rpc_get_peers)
         .or(rpc_get_status)
+        .or(rpc_get_chainspec)
         .or(rpc_get_era_info)
         .or(rpc_get_auction_info)
         .or(rpc_get_account_info)

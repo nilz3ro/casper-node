@@ -13,6 +13,7 @@
 use std::{
     fmt::{self, Display, Formatter},
     fs,
+    io::Read,
     path::{Path, PathBuf},
     str::FromStr,
     sync::Arc,
@@ -32,7 +33,10 @@ use casper_execution_engine::core::engine_state::{
     upgrade::{UpgradeConfig, UpgradeSuccess},
 };
 use casper_hashing::Digest;
-use casper_types::{bytesrepr::FromBytes, EraId, ProtocolVersion, StoredValue};
+use casper_types::{
+    bytesrepr::{FromBytes, ToBytes},
+    EraId, ProtocolVersion, StoredValue,
+};
 
 #[cfg(test)]
 use crate::utils::RESOURCES_PATH;
@@ -699,6 +703,14 @@ where
             }
             Event::CheckForNextUpgrade => self.check_for_next_upgrade(effect_builder),
             Event::GotNextUpgrade(next_upgrade) => self.handle_got_next_upgrade(next_upgrade),
+            Event::Request(ChainspecLoaderRequest::GetChainspecFile(responder)) => {
+                let path = self
+                    .root_dir
+                    .join(dir_name_from_version(&self.chainspec.protocol_version()))
+                    .join(CHAINSPEC_NAME);
+
+                responder.respond(fs::read(path)?).ignore()
+            }
         }
     }
 }
