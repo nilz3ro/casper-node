@@ -68,6 +68,7 @@ pub(super) async fn run<REv: ReactorEventT>(
     let rpc_get_auction_info =
         rpcs::state::GetAuctionInfo::create_filter(effect_builder, api_version);
     let rpc_get_rpcs = rpcs::docs::ListRpcs::create_filter(effect_builder, api_version);
+    let rpc_get_chainspec = rpcs::info::GetChainspec::create_filter(effect_builder, api_version);
 
     // Catch requests where the method is not one we handle.
     let unknown_method = warp::path(RPC_API_PATH)
@@ -101,7 +102,8 @@ pub(super) async fn run<REv: ReactorEventT>(
             .or(rpc_get_auction_info)
             .or(rpc_get_rpcs)
             .or(unknown_method)
-            .or(parse_failure),
+            .or(parse_failure)
+            .or(rpc_get_chainspec),
     );
 
     // Start the server, passing a oneshot receiver to allow the server to be shut down gracefully.

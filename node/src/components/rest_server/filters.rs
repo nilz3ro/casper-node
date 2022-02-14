@@ -28,6 +28,9 @@ pub const METRICS_API_PATH: &str = "metrics";
 /// The OpenRPC scehma URL path.
 pub const JSON_RPC_SCHEMA_API_PATH: &str = "rpc-schema";
 
+/// The chainspec file URL path.
+pub const CHAINSPEC_PATH: &str = "chainspec";
+
 pub(super) fn create_status_filter<REv: ReactorEventT>(
     effect_builder: EffectBuilder<REv>,
     api_version: ProtocolVersion,
@@ -90,6 +93,19 @@ pub(super) fn create_rpc_schema_filter<REv: ReactorEventT>(
                 .map(move |open_rpc_schema| {
                     Ok::<_, Rejection>(reply::json(&open_rpc_schema).into_response())
                 })
+        })
+        .boxed()
+}
+
+pub(super) fn create_chainspec_filter<REv: ReactorEventT>(
+    effect_builder: EffectBuilder<REv>,
+) -> BoxedFilter<(Response<Body>,)> {
+    warp::get()
+        .and(warp::path(CHAINSPEC_PATH))
+        .and_then(move || {
+            effect_builder
+                .get_chainspec_file()
+                .map(move |bytes| Ok::<_, Rejection>(bytes.into_response()))
         })
         .boxed()
 }

@@ -1018,6 +1018,8 @@ pub enum ChainspecLoaderRequest {
     GetChainspecInfo(Responder<ChainspecInfo>),
     /// Request for information about the current run.
     GetCurrentRunInfo(Responder<CurrentRunInfo>),
+    /// Request for chainspec file
+    GetChainspecFile(Responder<Vec<u8>>),
 }
 
 impl Display for ChainspecLoaderRequest {
@@ -1025,6 +1027,7 @@ impl Display for ChainspecLoaderRequest {
         match self {
             ChainspecLoaderRequest::GetChainspecInfo(_) => write!(f, "get chainspec info"),
             ChainspecLoaderRequest::GetCurrentRunInfo(_) => write!(f, "get current run info"),
+            ChainspecLoaderRequest::GetChainspecFile(_) => write!(f, "get chainspec file"),
         }
     }
 }
